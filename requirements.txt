@@ -68,7 +68,7 @@ pinecone-plugin-interface==0.0.7
 portalocker==2.10.1
 primp==0.8.1
 propcache==0.2.1
-protobuf==4.25.5
+protobuf==5.26.1
 protoc-gen-openapiv2==0.0.1
 pyairtable==3.0.0
 pyarrow==18.1.0
