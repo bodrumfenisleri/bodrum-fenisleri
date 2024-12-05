@@ -22,6 +22,7 @@ from typing import List
 from langchain.schema import Document
 from pinecone.grpc import PineconeGRPC as Pinecone
 from langchain_pinecone import PineconeVectorStore
+from langchain_upstage import ChatUpstage
 load_dotenv()
 
 os.environ["QDRANT_API_KEY_EBARTAN"] = st.secrets["QDRANT_API_KEY_EBARTAN"]
@@ -91,10 +92,18 @@ def should_continue(state: GraphsState) -> Literal["tools", "__end__"]:
     return "__end__"  # End the conversation if no tool is needed
 
 # Core invocation of the model
+#""" llm = ChatOpenAI(
+        #model="gpt-4o-mini",
+        #temperature=0.1,
+        #streaming=True,
+        # specifically for OpenAI we have to set parallel tool call to false
+        # because of st primitively visually rendering the tool results
+#    ).bind_tools(tools, parallel_tool_calls=False) """
 def _call_model(state: GraphsState):
     messages = state["messages"]
-    llm = ChatOpenAI(
-        model="gpt-4o-mini",
+    llm = ChatUpstage(
+        model="solar-pro",
+        api_key="up_gARBdMY2en4lDj1zqp1eev4i7dlod",
         temperature=0.1,
         streaming=True,
         # specifically for OpenAI we have to set parallel tool call to false
