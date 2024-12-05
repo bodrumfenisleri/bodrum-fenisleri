@@ -63,11 +63,11 @@ if prompt is not None:
 # st write magic
 with st.expander(label="Bodrum Chat Streaming and Tool Calling using LangGraph", expanded=st.session_state.expander_open):
     """
-    In this example, we're going to be creating our own events handler to stream our [_LangGraph_](https://langchain-ai.github.io/langgraph/)
-    invocations with via [`astream_events (v2)`](https://langchain-ai.github.io/langgraph/how-tos/streaming-from-final-node/).
-    This one is does not use any callbacks or external streamlit libraries and is asynchronous.
-    we've implemented `on_llm_new_token`, a method that run on every new generation of a token from the ChatLLM model, and
-    `on_tool_start` a method that runs on every tool call invocation even multiple tool calls, and `on_tool_end` giving final result of tool call.
+    You can query the Public Works Department's Netigma records in a database created using Pinecone vector store. 
+    This advanced search system utilizes vector-based search technology with natural language processing capabilities to provide semantic search functionality. 
+    Users can easily search through various documents including project files, technical reports, and administrative decisions using natural language queries. 
+    The system processes these documents into vectors, enabling context-aware searches that go beyond traditional keyword matching. 
+    Thanks to Pinecone's high-performance infrastructure, the system delivers fast and accurate results while maintaining scalability for large datasets.
     """
 
 # Initialize chat messages in session state
