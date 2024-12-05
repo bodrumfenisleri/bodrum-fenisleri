@@ -102,7 +102,7 @@ def should_continue(state: GraphsState) -> Literal["tools", "__end__"]:
 def _call_model(state: GraphsState):
     messages = state["messages"]
     llm = ChatOpenAI(
-        mmodel="gpt-4o-mini",
+        model="gpt-4o-mini",
         temperature=0.1,
         streaming=True,
     ).bind_tools(tools, parallel_tool_calls=False)
