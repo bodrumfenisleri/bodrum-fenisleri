@@ -101,13 +101,10 @@ def should_continue(state: GraphsState) -> Literal["tools", "__end__"]:
 #    ).bind_tools(tools, parallel_tool_calls=False) """
 def _call_model(state: GraphsState):
     messages = state["messages"]
-    llm = ChatUpstage(
-        model="solar-pro",
-        api_key="up_gARBdMY2en4lDj1zqp1eev4i7dlod",
+    llm = ChatOpenAI(
+        mmodel="gpt-4o-mini",
         temperature=0.1,
         streaming=True,
-        # specifically for OpenAI we have to set parallel tool call to false
-        # because of st primitively visually rendering the tool results
     ).bind_tools(tools, parallel_tool_calls=False)
     response = llm.invoke(messages)
     return {"messages": [response]}  # add the response to the messages using LangGraph reducer paradigm
