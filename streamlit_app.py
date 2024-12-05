@@ -1,53 +1,95 @@
+import os
+import random
+import asyncio
 import streamlit as st
-from openai import OpenAI
+from dotenv import load_dotenv
+from pprint import pprint
 
-# Show title and description.
-st.title("📄 Document question answering")
-st.write(
-    "Upload a document below and ask a question about it – GPT will answer! "
-    "To use this app, you need to provide an OpenAI API key, which you can get [here](https://platform.openai.com/account/api-keys). "
-)
+from langchain_core.messages.tool import tool_call
+from langchain_openai.chat_models import ChatOpenAI
+from langchain.chains.question_answering.map_reduce_prompt import messages
+from langchain_core.messages import AIMessage,HumanMessage,SystemMessage
+from typing import TypedDict, Annotated
 
-# Ask user for their OpenAI API key via `st.text_input`.
-# Alternatively, you can store the API key in `./.streamlit/secrets.toml` and access it
-# via `st.secrets`, see https://docs.streamlit.io/develop/concepts/connections/secrets-management
-openai_api_key = st.text_input("OpenAI API Key", type="password")
-if not openai_api_key:
-    st.info("Please add your OpenAI API key to continue.", icon="🗝️")
-else:
+from langchain_core.messages import AnyMessage
+from langgraph.graph.message import add_messages
 
-    # Create an OpenAI client.
-    client = OpenAI(api_key=openai_api_key)
+from langgraph.graph import StateGraph,START,END
+from langgraph.graph import MessagesState
+from langgraph.prebuilt import ToolNode
+from langgraph.prebuilt import tools_condition
+from astream_events_handler import invoke_our_graph
 
-    # Let the user upload a file via `st.file_uploader`.
-    uploaded_file = st.file_uploader(
-        "Upload a document (.txt or .md)", type=("txt", "md")
-    )
 
-    # Ask the user for a question via `st.text_area`.
-    question = st.text_area(
-        "Now ask a question about the document!",
-        placeholder="Can you give me a short summary?",
-        disabled=not uploaded_file,
-    )
 
-    if uploaded_file and question:
+load_dotenv()
 
-        # Process the uploaded file and question.
-        document = uploaded_file.read().decode()
-        messages = [
-            {
-                "role": "user",
-                "content": f"Here's a document: {document} \n\n---\n\n {question}",
-            }
-        ]
+os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 
-        # Generate an answer using the OpenAI API.
-        stream = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=messages,
-            stream=True,
-        )
+os.environ["LANGCHAIN_ENDPOINT"] = st.secrets["LANGCHAIN_ENDPOINT"]
+os.environ["LANGCHAIN_API_KEY"] = st.secrets["LANGCHAIN_API_KEY"]
+os.environ["LANGCHAIN_PROJECT"] = st.secrets["LANGCHAIN_PROJECT"]
+os.environ["SERPER_API_KEY"] = st.secrets["SERPER_API_KEY"]
+openai_api_key = os.getenv("OPENAI_API_KEY")
+langchain_api_key = os.getenv("LANGCHAIN_API_KEY")
+langchain_project = os.getenv("LANGCHAIN_PROJECT")
+print(st.secrets["LANGCHAIN_PROJECT"])
 
-        # Stream the response to the app using `st.write_stream`.
-        st.write_stream(stream)
+st.title("Bodrum 🤝 LangGraph")
+st.markdown("#### Chat Streaming and Tool Calling from Bodrum turkey")
+
+# Initialize the expander state
+if "expander_open" not in st.session_state:
+    st.session_state.expander_open = True
+
+# Check if the OpenAI API key is set
+if not os.getenv('OPENAI_API_KEY'):
+    # If not, display a sidebar input for the user to provide the API key
+    st.sidebar.header("OPENAI_API_KEY Setup")
+    api_key = st.sidebar.text_input(label="API Key", type="password", label_visibility="collapsed")
+    os.environ["OPENAI_API_KEY"] = api_key
+    # If no key is provided, show an info message and stop further execution and wait till key is entered
+    if not api_key:
+        st.info("Please enter your OPENAI_API_KEY in the sidebar.")
+        st.stop()
+
+# Capture user input from chat input
+prompt = st.chat_input()
+
+# Toggle expander state based on user input
+if prompt is not None:
+    st.session_state.expander_open = False  # Close the expander when the user starts typing
+
+# st write magic
+with st.expander(label="Bodrum Chat Streaming and Tool Calling using LangGraph", expanded=st.session_state.expander_open):
+    """
+    In this example, we're going to be creating our own events handler to stream our [_LangGraph_](https://langchain-ai.github.io/langgraph/)
+    invocations with via [`astream_events (v2)`](https://langchain-ai.github.io/langgraph/how-tos/streaming-from-final-node/).
+    This one is does not use any callbacks or external streamlit libraries and is asynchronous.
+    we've implemented `on_llm_new_token`, a method that run on every new generation of a token from the ChatLLM model, and
+    `on_tool_start` a method that runs on every tool call invocation even multiple tool calls, and `on_tool_end` giving final result of tool call.
+    """
+
+# Initialize chat messages in session state
+if "messages" not in st.session_state:
+    st.session_state["messages"] = [AIMessage(content="How can I help you?")]
+
+# Loop through all messages in the session state and render them as a chat on every st.refresh mech
+for msg in st.session_state.messages:
+    # https://docs.streamlit.io/develop/api-reference/chat/st.chat_message
+    # we store them as AIMessage and HumanMessage as its easier to send to LangGraph
+    if isinstance(msg, AIMessage):
+        st.chat_message("assistant").write(msg.content)
+    elif isinstance(msg, HumanMessage):
+        st.chat_message("user").write(msg.content)
+
+# Handle user input if provided
+if prompt:
+    st.session_state.messages.append(HumanMessage(content=prompt))
+    st.chat_message("user").write(prompt)
+
+    with st.chat_message("assistant"):
+        # create a placeholder container for streaming and any other events to visually render here
+        placeholder = st.container()
+        response = asyncio.run(invoke_our_graph(st.session_state.messages, placeholder))
+        st.session_state.messages.append(AIMessage(response))
