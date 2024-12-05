@@ -42,7 +42,7 @@ print("--------pinecone_result---------")
 #print(pinecone_result)
 retriever_pinecone = pinecone_vector_store.as_retriever(
     search_type="mmr",
-    search_kwargs={"k": 1, "fetch_k": 2, "lambda_mult": 0.5},
+    search_kwargs={"k": 10, "fetch_k": 20, "lambda_mult": 0.5},
 )
 #pinecone_retriever_result = retriever_pinecone.invoke(query)
 #print("--------pinecone_retriever_result---------")
@@ -71,23 +71,8 @@ search_PINECONE = StructuredTool.from_function(
     )
 
 
-@tool
-def get_weather(location: str):
-    """Call to get the current weather."""
-    # A simplified weather response based on location
-    if location.lower() in ["sf", "san francisco"]:
-        return "It's 60 degrees and foggy."
-    else:
-        return "It's 90 degrees and sunny."
-
-@tool
-def get_coolest_cities():
-    """Get a list of coolest cities."""
-    # Hardcoded response with a list of cool cities
-    return "nyc, sf"
-
 # List of tools that will be accessible to the graph via the ToolNode
-tools = [get_weather, get_coolest_cities,search_PINECONE]
+tools = [search_PINECONE]
 tool_node = ToolNode(tools)
 
 # This is the default state same as "MessageState" TypedDict but allows us accessibility to custom keys
@@ -110,7 +95,7 @@ def _call_model(state: GraphsState):
     messages = state["messages"]
     llm = ChatOpenAI(
         model="gpt-4o-mini",
-        temperature=0.6,
+        temperature=0.5,
         streaming=True,
         # specifically for OpenAI we have to set parallel tool call to false
         # because of st primitively visually rendering the tool results
