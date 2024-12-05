@@ -43,7 +43,7 @@ print("--------pinecone_result---------")
 #print(pinecone_result)
 retriever_pinecone = pinecone_vector_store.as_retriever(
     search_type="mmr",
-    search_kwargs={"k": 10, "fetch_k": 20, "lambda_mult": 0.5},
+    search_kwargs={"k": 10, "fetch_k": 20, "lambda_mult": 0.9},
 )
 #pinecone_retriever_result = retriever_pinecone.invoke(query)
 #print("--------pinecone_retriever_result---------")
