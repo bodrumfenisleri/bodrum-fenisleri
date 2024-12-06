@@ -59,7 +59,7 @@ with st.expander(label="Bodrum Chat Streaming and Tool Calling using LangGraph",
 
 # Initialize chat messages in session state
 if "messages" not in st.session_state:
-    st.session_state["messages"] = [AIMessage(content="How can I help you?")]
+    st.session_state["messages"] = [AIMessage(content="Hangi mahalle yol cadde hakkında bilgi almak istiyorsunuz?")]
 
 # Loop through all messages in the session state and render them as a chat on every st.refresh mech
 for msg in st.session_state.messages:
