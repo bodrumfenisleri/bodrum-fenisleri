@@ -46,7 +46,7 @@ retriever_pinecone_ulakbel = pinecone_vector_store_ulakbel.as_retriever(
 
 def search_pinecone(query: str) -> List[Document]:
     """
-    Perform a search using Pinecone vector store
+    Perform a search using Pinecone vector store for netigma namespace
     
     Args:
         query (str): The search pinecone as_retriever to be used
@@ -58,7 +58,7 @@ def search_pinecone(query: str) -> List[Document]:
 
 def search_pinecone_uakbel(query: str) -> List[Document]:
     """
-    Perform a search using Pinecone vector store
+    Perform a search using Pinecone vector store for ulakbel namespace
     
     Args:
         query (str): The search pinecone as_retriever to be used
@@ -66,7 +66,7 @@ def search_pinecone_uakbel(query: str) -> List[Document]:
     Returns:
         List[Document]: List of retrieved documents
     """
-    return retriever_pinecone.invoke(query)
+    return retriever_pinecone_ulakbel.invoke(query)
 search_PINECONE = StructuredTool.from_function(
         name="PineconeSearch",
         func=search_pinecone,  # Executes Pinecone search using the provided query
