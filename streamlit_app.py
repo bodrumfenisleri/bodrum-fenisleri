@@ -30,9 +30,9 @@ openai_api_key = os.getenv("OPENAI_API_KEY")
 langchain_api_key = os.getenv("LANGCHAIN_API_KEY")
 langchain_project = os.getenv("LANGCHAIN_PROJECT")
 print(st.secrets["LANGCHAIN_PROJECT"])
-
-st.title("Bodrum 🤝 LangGraph")
-st.markdown("#### Chat Streaming and Tool Calling from Bodrum turkey")
+st.set_page_config(page_title="Bodrum Belediye Başkanlığı Fen İşleri Müdürlüğü", page_icon="👷🏻")
+st.title("Bodrum 🚧 Fen İşleri Müdürlüğü")
+st.markdown("#### Netigma Yol Envanteri, Faaliyetler ve Ulakbel kayıtlarından oluşan veritabanı ile yapay zeka destekli sohbet")
 
 # Initialize the expander state
 if "expander_open" not in st.session_state:
@@ -59,11 +59,10 @@ if prompt is not None:
 # st write magic
 with st.expander(label="Bodrum Chat Streaming and Tool Calling using LangGraph", expanded=st.session_state.expander_open):
     """
-    You can query the Public Works Department's Netigma records in a database created using Pinecone vector store. 
-    This advanced search system utilizes vector-based search technology with natural language processing capabilities to provide semantic search functionality. 
-    Users can easily search through various documents including project files, technical reports, and administrative decisions using natural language queries. 
-    The system processes these documents into vectors, enabling context-aware searches that go beyond traditional keyword matching. 
-    Thanks to Pinecone's high-performance infrastructure, the system delivers fast and accurate results while maintaining scalability for large datasets.
+    Bu gelişmiş arama sistemi, anlamsal arama işlevselliği sağlamak için doğal dil işleme yetenekleriyle birlikte vektör tabanlı arama teknolojisini kullanır. 
+    Kullanıcılar, doğal dil sorguları kullanarak faalyetler ve şikayetler gibi çeşitli belgelerde kolayca arama yapabilir. 
+    Sistem, bu belgeleri vektörlere dönüştürerek, geleneksel anahtar kelime eşleştirmesinin ötesine geçen bağlam odaklı aramalar yapılmasını sağlar.
+
     """
 
 # Initialize chat messages in session state
