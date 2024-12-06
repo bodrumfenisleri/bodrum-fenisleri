@@ -28,6 +28,7 @@ load_dotenv()
 
 os.environ["QDRANT_API_KEY_EBARTAN"] = st.secrets["QDRANT_API_KEY_EBARTAN"]
 os.environ["QDRANT_URL_EBARTAN"] = st.secrets["QDRANT_URL_EBARTAN"]
+os.environ["LANGCHAIN_TRACING_V2"] = st.secrets["LANGCHAIN_TRACING_V2"]
 embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
 
 index_name = "bodrum"
