@@ -49,7 +49,7 @@ if prompt is not None:
     st.session_state.expander_open = False  # Close the expander when the user starts typing
 
 # st write magic
-with st.expander(label="Bodrum Chat Streaming and Tool Calling using LangGraph", expanded=st.session_state.expander_open):
+with st.expander(label="Amaç ve Kapsam", expanded=st.session_state.expander_open):
     """
     Bu gelişmiş arama sistemi, anlamsal arama işlevselliği sağlamak için doğal dil işleme yetenekleriyle birlikte vektör tabanlı arama teknolojisini kullanır. 
     Kullanıcılar, doğal dil sorguları kullanarak faalyetler ve şikayetler gibi çeşitli belgelerde kolayca arama yapabilir. 
