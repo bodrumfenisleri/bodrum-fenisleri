@@ -28,26 +28,21 @@ load_dotenv()
 os.environ["QDRANT_API_KEY_EBARTAN"] = st.secrets["QDRANT_API_KEY_EBARTAN"]
 os.environ["QDRANT_URL_EBARTAN"] = st.secrets["QDRANT_URL_EBARTAN"]
 embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
-#pc = Pinecone(api_key=st.secrets["PINECONE_API_KEY"])
+
 index_name = "bodrum"
-#index = pc.Index(index_name)
-#print(index.describe_index_stats())
 
 pinecone_vector_store = PineconeVectorStore(embedding=embeddings, index_name=index_name,namespace="netigma")
+pinecone_vector_store_ulakbel = PineconeVectorStore(embedding=embeddings, index_name=index_name,namespace="ulakbel")
 
-#query = "Yalıkavak Mahallesi Muhtarı?"
-#pinecone_result = pinecone_vector_store.similarity_search(
-    #query,  # our search query
-    #k=1  # return 3 most relevant docs)
-print("--------pinecone_result---------")
-#print(pinecone_result)
 retriever_pinecone = pinecone_vector_store.as_retriever(
     search_type="mmr",
     search_kwargs={"k": 10, "fetch_k": 20, "lambda_mult": 0.9},
 )
-#pinecone_retriever_result = retriever_pinecone.invoke(query)
-#print("--------pinecone_retriever_result---------")
-#print(pinecone_retriever_result)
+retriever_pinecone_ulakbel = pinecone_vector_store_ulakbel.as_retriever(
+    search_type="mmr",
+    search_kwargs={"k": 10, "fetch_k": 20, "lambda_mult": 0.9},
+)
+
 
 def search_pinecone(query: str) -> List[Document]:
     """
@@ -61,7 +56,17 @@ def search_pinecone(query: str) -> List[Document]:
     """
     return retriever_pinecone.invoke(query)
 
-
+def search_pinecone_uakbel(query: str) -> List[Document]:
+    """
+    Perform a search using Pinecone vector store
+    
+    Args:
+        query (str): The search pinecone as_retriever to be used
+        
+    Returns:
+        List[Document]: List of retrieved documents
+    """
+    return retriever_pinecone.invoke(query)
 search_PINECONE = StructuredTool.from_function(
         name="PineconeSearch",
         func=search_pinecone,  # Executes Pinecone search using the provided query
@@ -70,10 +75,17 @@ search_PINECONE = StructuredTool.from_function(
         Input should be a search query string.
         """,
     )
-
+search_PINECONE_ULAKBEL = StructuredTool.from_function(
+        name="PineconeSearchULAKBEL",
+        func=search_pinecone_uakbel,  # Executes Pinecone search using the provided query
+        description=f"""
+        Useful vector store search that finds relevant documents based on semantic similarity.
+        Input should be a search query string.
+        """,
+    )
 
 # List of tools that will be accessible to the graph via the ToolNode
-tools = [search_PINECONE]
+tools = [search_PINECONE,search_PINECONE_ULAKBEL]
 tool_node = ToolNode(tools)
 
 # This is the default state same as "MessageState" TypedDict but allows us accessibility to custom keys
