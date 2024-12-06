@@ -33,7 +33,7 @@ print(st.secrets["LANGCHAIN_TRACING_V2"])
 st.set_page_config(page_title="Bodrum Belediye Başkanlığı Fen İşleri Müdürlüğü", page_icon="👷🏻")
 #st.title("Bodrum Belediyesi 🚧 Fen İşleri Müdürlüğü")
 st.markdown("### Bodrum Belediye Başkanlığı 🚧 Fen İşleri Müdürlüğü")
-st.markdown("###### Netigma Yol Envanteri, Faaliyetler ve Ulakbel kayıtlarından oluşan veritabanı ile yapay zeka destekli sohbet")
+st.markdown("###### Netigma Yol Envanteri, Faaliyetler ve Ulakbel kayıtlarından oluşan yapay zeka destekli vektör veritabanı ile sohbet")
 
 # Initialize the expander state
 if "expander_open" not in st.session_state:
