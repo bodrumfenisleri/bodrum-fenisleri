@@ -62,7 +62,6 @@ orjson==3.10.12
 packaging==24.2
 pandas==2.2.3
 pillow==11.0.0
-pinecone==5.4.1
 pinecone-client==5.0.1
 pinecone-plugin-interface==0.0.7
 portalocker==2.10.1
