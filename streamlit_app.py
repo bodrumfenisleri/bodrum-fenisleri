@@ -38,16 +38,7 @@ st.markdown("#### Netigma Yol Envanteri, Faaliyetler ve Ulakbel kayıtlarından 
 if "expander_open" not in st.session_state:
     st.session_state.expander_open = True
 
-# Check if the OpenAI API key is set
-if not os.getenv('OPENAI_API_KEY'):
-    # If not, display a sidebar input for the user to provide the API key
-    st.sidebar.header("OPENAI_API_KEY Setup")
-    api_key = st.sidebar.text_input(label="API Key", type="password", label_visibility="collapsed")
-    os.environ["OPENAI_API_KEY"] = api_key
-    # If no key is provided, show an info message and stop further execution and wait till key is entered
-    if not api_key:
-        st.info("Please enter your OPENAI_API_KEY in the sidebar.")
-        st.stop()
+
 
 # Capture user input from chat input
 prompt = st.chat_input()
