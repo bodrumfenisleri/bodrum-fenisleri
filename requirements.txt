@@ -62,7 +62,7 @@ packaging==24.2
 pandas==2.2.3
 pillow==11.0.0
 pinecone==5.4.1
-pinecone-plugin-inference==3.0.0
+pinecone-plugin-inference>=2.0.0
 pinecone-plugin-interface==0.0.7
 portalocker==2.10.1
 propcache==0.2.1

@@ -20,7 +20,7 @@ from langchain_qdrant import SparseEmbeddings
 from langchain.tools import StructuredTool
 from typing import List
 from langchain.schema import Document
-from pinecone.grpc import PineconeGRPC as Pinecone
+#from pinecone.grpc import PineconeGRPC as Pinecone
 from langchain_pinecone import PineconeVectorStore
 from langchain_upstage import ChatUpstage
 load_dotenv()
