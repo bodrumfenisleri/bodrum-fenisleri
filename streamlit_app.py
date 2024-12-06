@@ -20,7 +20,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-
 os.environ["LANGCHAIN_TRACING_V2"] = st.secrets["LANGCHAIN_TRACING_V2"]
 os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 os.environ["LANGCHAIN_ENDPOINT"] = st.secrets["LANGCHAIN_ENDPOINT"]
@@ -30,7 +29,7 @@ os.environ["SERPER_API_KEY"] = st.secrets["SERPER_API_KEY"]
 openai_api_key = os.getenv("OPENAI_API_KEY")
 langchain_api_key = os.getenv("LANGCHAIN_API_KEY")
 langchain_project = os.getenv("LANGCHAIN_PROJECT")
-print(st.secrets["LANGCHAIN_PROJECT"])
+print(st.secrets["LANGCHAIN_TRACING_V2"])
 st.set_page_config(page_title="Bodrum Belediye Başkanlığı Fen İşleri Müdürlüğü", page_icon="👷🏻")
 st.title("Bodrum 🚧 Fen İşleri Müdürlüğü")
 st.markdown("#### Netigma Yol Envanteri, Faaliyetler ve Ulakbel kayıtlarından oluşan veritabanı ile yapay zeka destekli sohbet")
