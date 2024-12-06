@@ -117,7 +117,7 @@ def _call_model(state: GraphsState):
         model="gpt-4o-mini",
         temperature=0.1,
         streaming=True,
-    ).bind_tools(tools, parallel_tool_calls=False)
+    ).bind_tools(tools, parallel_tool_calls=True)
     response = llm.invoke(messages)
     return {"messages": [response]}  # add the response to the messages using LangGraph reducer paradigm
 
