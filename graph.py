@@ -23,6 +23,7 @@ from langchain.schema import Document
 #from pinecone.grpc import PineconeGRPC as Pinecone
 from langchain_pinecone import PineconeVectorStore
 from langchain_upstage import ChatUpstage
+from langchain_core.messages import SystemMessage
 load_dotenv()
 
 os.environ["QDRANT_API_KEY_EBARTAN"] = st.secrets["QDRANT_API_KEY_EBARTAN"]
@@ -71,7 +72,8 @@ search_PINECONE = StructuredTool.from_function(
         name="PineconeSearch",
         func=search_pinecone,  # Executes Pinecone search using the provided query
         description=f"""
-        Useful vector store search that finds relevant documents based on semantic similarity.
+        A mandatory vector store search tool that retrieves information from the Netigma namespace.
+        This tool MUST be used in every search operation.
         Input should be a search query string.
         """,
     )
@@ -79,7 +81,8 @@ search_PINECONE_ULAKBEL = StructuredTool.from_function(
         name="PineconeSearchULAKBEL",
         func=search_pinecone_uakbel,  # Executes Pinecone search using the provided query
         description=f"""
-        Useful vector store search that finds relevant documents based on semantic similarity.
+        A mandatory vector store search tool that retrieves information from the Ulakbel namespace.
+        This tool MUST be used in every search operation.
         Input should be a search query string.
         """,
     )
@@ -103,16 +106,17 @@ def should_continue(state: GraphsState) -> Literal["tools", "__end__"]:
         return "tools"  # Continue to tool execution
     return "__end__"  # End the conversation if no tool is needed
 
-# Core invocation of the model
-#""" llm = ChatOpenAI(
-        #model="gpt-4o-mini",
-        #temperature=0.1,
-        #streaming=True,
-        # specifically for OpenAI we have to set parallel tool call to false
-        # because of st primitively visually rendering the tool results
-#    ).bind_tools(tools, parallel_tool_calls=False) """
+
 def _call_model(state: GraphsState):
+    
     messages = state["messages"]
+    system_message = {
+    "role": "system",
+    "content": """You MUST use both 'PineconeSearch' and 'PineconeSearchULAKBEL' tools for every search query.
+    Combine information from both sources to create a comprehensive response.
+    Do not provide an answer without using both tools."""}
+    if not messages or messages[0].type != "system":
+        messages = [SystemMessage(content=system_message["content"])] + messages
     llm = ChatOpenAI(
         model="gpt-4o-mini",
         temperature=0.1,
