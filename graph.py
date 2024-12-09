@@ -40,11 +40,11 @@ pinecone_vector_store_ulakbel = PineconeVectorStore(embedding=embeddings, index_
 
 retriever_pinecone = pinecone_vector_store.as_retriever(
     search_type="mmr",
-    search_kwargs={"k": 10, "fetch_k": 20, "lambda_mult": 0.9},
+    search_kwargs={"k": 10, "fetch_k": 20, "lambda_mult": 1},
 )
 retriever_pinecone_ulakbel = pinecone_vector_store_ulakbel.as_retriever(
     search_type="mmr",
-    search_kwargs={"k": 10, "fetch_k": 20, "lambda_mult": 0.9},
+    search_kwargs={"k": 10, "fetch_k": 20, "lambda_mult": 1},
 )
 
 
